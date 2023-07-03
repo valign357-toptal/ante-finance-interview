@@ -1,0 +1,83 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Blockchain {
+  id                             String @id @default(uuid()) @db.Uuid
+  name                           String @unique @db.VarChar(100)
+  chainId                        String @unique @db.VarChar(50)
+  rpcEndpoint                    String @unique @db.VarChar(255)
+  coingeckoPlatformId            String @unique @db.VarChar(100)
+  antePoolFactoryContractAddress String @db.VarChar(42)
+
+  protocols Protocol[]
+  tests     AnteTest[]
+  pools     AntePool[]
+  tokens    Token[]
+}
+
+model Protocol {
+  id                    String  @id @default(uuid()) @db.Uuid
+  name                  String  @db.VarChar(100)
+  totalValueLockedInUsd Decimal @db.Decimal(20, 2)
+
+  blockchainId String     @db.Uuid
+  blockchain   Blockchain @relation(fields: [blockchainId], references: [id])
+
+  tests AnteTest[]
+
+  @@unique([name, blockchainId])
+}
+
+model AnteTest {
+  id                    String  @id @default(uuid()) @db.Uuid
+  contractAddress       String  @db.VarChar(42)
+  name                  String  @db.VarChar(255)
+  totalValueLockedInUsd Decimal @db.Decimal(20, 2)
+
+  blockchainId String     @db.Uuid
+  blockchain   Blockchain @relation(fields: [blockchainId], references: [id])
+
+  protocolId String   @db.Uuid
+  protocol   Protocol @relation(fields: [protocolId], references: [id])
+
+  pools AntePool[]
+
+  @@unique([contractAddress, blockchainId])
+}
+
+model AntePool {
+  id                    String  @id @default(uuid()) @db.Uuid
+  contractAddress       String  @db.VarChar(42)
+  totalValueLockedInUsd Decimal @db.Decimal(20, 2)
+
+  blockchainId String     @db.Uuid
+  blockchain   Blockchain @relation(fields: [blockchainId], references: [id])
+
+  tokenId String @db.Uuid
+  token   Token  @relation(fields: [tokenId], references: [id])
+
+  testId String   @db.Uuid
+  test   AnteTest @relation(fields: [testId], references: [id])
+
+  @@unique([contractAddress, blockchainId])
+}
+
+model Token {
+  id              String @id @default(uuid()) @db.Uuid
+  contractAddress String @db.VarChar(42)
+  name            String @db.VarChar(100)
+  priceInUsd      Float
+
+  blockchainId String     @db.Uuid
+  blockchain   Blockchain @relation(fields: [blockchainId], references: [id])
+
+  pools AntePool[]
+
+  @@unique([contractAddress, blockchainId])
+}

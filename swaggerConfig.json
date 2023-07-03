@@ -1,0 +1,10 @@
+{
+	"swagger": {
+		"baseUrl": "./",
+		"outputDirectory": "./swagger",
+		"entryFile": "./services/index.ts",
+		"host": "localhost:3000",
+		"basePath": "/api",
+		"yaml": true
+	}
+}

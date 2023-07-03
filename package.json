@@ -1,6 +1,7 @@
 {
   "name": "ante-finance-interview",
   "version": "1.0.0",
+  "author": "ignatov350@gmail.com",
   "scripts": {
     "build": "tsc",
     "dev": "ts-node -r tsconfig-paths/register ./node_modules/moleculer/bin/moleculer-runner.js --hot --repl --config moleculer.config.ts services/**/*.service.ts",
@@ -10,7 +11,6 @@
     "dc:up": "docker-compose up --build -d",
     "dc:down": "docker-compose down"
   },
-  "author": "ignatov350@gmail.com",
   "devDependencies": {
     "@types/bluebird": "^3.5.38",
     "@types/config": "^3.3.0",
@@ -51,6 +51,6 @@
     "tsconfig-paths": "^4.2.0"
   },
   "engines": {
-    "node": ">= 8.x.x"
+    "node": ">= 14.x.x"
   }
 }
